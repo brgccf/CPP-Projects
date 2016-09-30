@@ -91,8 +91,8 @@ void read_cows(int qtd, cow *cows)
 
 int main()
 {
-	// freopen("in.txt", "r", stdin);
-	// freopen("out.txt", "w", stdout);
+	freopen("in.txt", "r", stdin);
+	freopen("out.txt", "w", stdout);
 	string line;
 	fence fences[max];
 	flower flows[max];
@@ -116,26 +116,27 @@ int main()
 			case(1):
 				stream >> qtd;
 				num_fences = qtd;
-				read_fences(qtd, fences);
+				if(num_fences)read_fences(qtd, fences);
 				//print_fences(fences, qtd);
 				break;
 			case(2):
 				stream >> qtd;
 				num_flows = qtd;
-				read_flowers(qtd, flows);
+				if(num_flows)read_flowers(qtd, flows);
 				//print_flowers(flows, qtd);
 				break;
 			case(3):
 				stream >> qtd;
 				num_cows = qtd;
-				read_cows(qtd, cows);
+				if(num_cows)read_cows(qtd, cows);
 				//print_cows(cows, qtd);
 				break;
 			default:
 				cout << "default" << endl;
 
 		}
-		getline(cin, line);
+		//cout << "qtd = " << qtd << endl;
+		if(qtd)getline(cin, line);
 		
 		++blocks;
 		if (blocks > 3)
