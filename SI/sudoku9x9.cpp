@@ -1,33 +1,46 @@
-#include "bits/stdc++.h"
+#include <iostream>
+#include <string>
 using namespace std;
-char tab[9][9];
-
+int tab[9][9];
+bool finished;
+int qt[10]; //contador de quantas vezes numero foi inserido no tab
 //imprimir tabuleiro
-void print_tab(int n)
+void print_tab()
 {
-	cout << "tabuleiro Caso " << n << " :" << endl;
 	for (int i = 0; i < 9; ++i)
 	{
 		for (int j = 0; j < 9; ++j)
 		{
-			cout << tab[i][j]-'0';
+			cout << tab[i][j];
 		}
 		cout << endl;
 	}
 }
 
 //checar linhas e colunas
-bool check_row_col(char value, int row, int col)
+bool check_row_col(int value, int row, int col)
 {
 	for (int i = 0; i < 9; ++i)
 	{
 		if(tab[row][i] == value || tab[i][col] == value)
+			return false;
+	}
+	return true;
+}
+//checar linha 
+bool check_row (int value, int row)
+{
+	for (int i = 0; i < 9; ++i)
+	{
+		if (tab[row][i] == value)
+		{
 			return true;
+		}
 	}
 	return false;
 }
-
-bool check_square(char value, int row, int col)
+//verificar quadrante
+bool check_square(int value, int row, int col)
 {
 	row = row - row%3;
 	col = col - col%3;
@@ -40,29 +53,61 @@ bool check_square(char value, int row, int col)
 	}
 	return true;
 }
+//verificar quadrante, linha e coluna ao mesmo tempo
+bool possible(int value, int row, int col)
+{
+	return(!(tab[row][col]) && check_square(value, row, col)
+		&& check_row_col(value, row, col));
+}
 
-void backtrack(char value, bool finished, int n)
+void backtrack(int value, int row)
 {
 	if(finished) return;
 	if(value > 9) 
 	{
-		 print_tab(n);
-		 
+		print_tab();
+	    finished = true;
+		return;
 	}
+	else if (qt[value] > 8)
+	{
+		backtrack(value+1, 0);
+	}
+	if (check_row(value, row)) //se ja houver numero na linha
+	{
+		backtrack(value, row+1); //tenta add na linha abaixo
+		return;
+	}
+
+	for (int i = 0; !finished && i < 9; ++i)
+	{
+		if (possible(value, row, i))
+		{
+			tab[row][i] = value;
+			++qt[value];
+			backtrack(value, row+1);
+			--qt[value];
+			tab[row][i] = 0;
+		}
+	}
+
 }
 
-int main(int argc, char const *argv[])
+int main()
 {
-	freopen("in.txt", "r", stdin);
-	freopen("out.txt", "w", stdout);
 	string line;
-
 	int num_cases = 0;
 	cin >> num_cases;
 	int counter = 1;
 	getline(cin, line);
+	
 	while(num_cases)
 	{	
+		finished = false;
+		for (int i = 0; i < 10; ++i)
+		{
+			qt[i] = 0;
+		}
 		//reading tab...
 		for (int i = 0; i < 9; ++i)
 		{
@@ -70,13 +115,13 @@ int main(int argc, char const *argv[])
 			//cout << "line = " << line << endl;
 			for (int j = 0; j < 9; ++j)
 			{
-				tab[i][j] = (char)line[j];
+				tab[i][j] = line[j]-'0';
+				++qt[tab[i][j]];
 			}
 		}
-		print_tab(counter);
 
 		//execution...
-		
+		backtrack(1, 0);
 		++counter;
 		--num_cases;
 	}
