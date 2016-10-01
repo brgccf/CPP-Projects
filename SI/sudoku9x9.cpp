@@ -5,7 +5,7 @@ int tab[9][9];
 bool finished;
 int qt[10]; //contador de quantas vezes numero foi inserido no tab
 //imprimir tabuleiro
-void print_tab()
+inline void print_tab()
 {
 	for (int i = 0; i < 9; ++i)
 	{
@@ -18,7 +18,7 @@ void print_tab()
 }
 
 //checar linhas e colunas
-bool check_row_col(int value, int row, int col)
+inline bool check_row_col(int value, int row, int col)
 {
 	for (int i = 0; i < 9; ++i)
 	{
@@ -28,7 +28,7 @@ bool check_row_col(int value, int row, int col)
 	return true;
 }
 //checar linha 
-bool check_row (int value, int row)
+inline bool check_row (int value, int row)
 {
 	for (int i = 0; i < 9; ++i)
 	{
@@ -40,7 +40,7 @@ bool check_row (int value, int row)
 	return false;
 }
 //verificar quadrante
-bool check_square(int value, int row, int col)
+inline bool check_square(int value, int row, int col)
 {
 	row = row - row%3;
 	col = col - col%3;
@@ -54,7 +54,7 @@ bool check_square(int value, int row, int col)
 	return true;
 }
 //verificar quadrante, linha e coluna ao mesmo tempo
-bool possible(int value, int row, int col)
+inline bool possible(int value, int row, int col)
 {
 	return(!(tab[row][col]) && check_square(value, row, col)
 		&& check_row_col(value, row, col));
@@ -98,21 +98,16 @@ int main()
 	string line;
 	int num_cases = 0;
 	cin >> num_cases;
-	int counter = 1;
 	getline(cin, line);
 	
-	while(num_cases)
+	while(num_cases--)
 	{	
 		finished = false;
-		for (int i = 0; i < 10; ++i)
-		{
-			qt[i] = 0;
-		}
+		for (int i = 0; i < 10; ++i) qt[i] = 0;
 		//reading tab...
 		for (int i = 0; i < 9; ++i)
 		{
-			getline(cin, line);
-			//cout << "line = " << line << endl;
+			cin >> line;
 			for (int j = 0; j < 9; ++j)
 			{
 				tab[i][j] = line[j]-'0';
@@ -122,8 +117,6 @@ int main()
 
 		//execution...
 		backtrack(1, 0);
-		++counter;
-		--num_cases;
 	}
 	return 0;
 }
